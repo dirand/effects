@@ -11,7 +11,7 @@ export interface EffectMetadata {
 }
 
 export function Effect({ dispatch } = { dispatch: true }): PropertyDecorator {
-  return function(target: any, propertyName: string) {
+  return function (target: any, propertyName: string) {
     if (!(Reflect as any).hasOwnMetadata(METADATA_KEY, target)) {
       (Reflect as any).defineMetadata(METADATA_KEY, [], target);
     }
@@ -19,7 +19,7 @@ export function Effect({ dispatch } = { dispatch: true }): PropertyDecorator {
     const effects: EffectMetadata[] = (Reflect as any).getOwnMetadata(METADATA_KEY, target);
     const metadata: EffectMetadata = { propertyName, dispatch };
 
-    (Reflect as any).defineMetadata(METADATA_KEY, [ ...effects, metadata ], target);
+    (Reflect as any).defineMetadata(METADATA_KEY, [...effects, metadata], target);
   };
 }
 
@@ -53,10 +53,9 @@ export function mergeEffects(instance: any, prefix?: string): Observable<any> {
 
 function appendEffectsWithPrefix(instance: any, observables: Observable<any>[], prefix?: string, ) {
   if (prefix) {
-    for (let property in instance) {
-      let propertyName: string = property;
-      if (instance.hasOwnProperty(propertyName) && propertyName.startsWith(prefix)) {
-        const observable = getObservable(instance, propertyName);
+    for (const property in instance) {
+      if (instance.hasOwnProperty(property) && property.startsWith(prefix)) {
+        const observable = getObservable(instance, property);
 
         if (observable && observables.indexOf(observable) === -1) {
           observables.push(observable);
